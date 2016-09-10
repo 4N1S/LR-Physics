@@ -33,8 +33,8 @@ app.get('/', function(req, res){
 
 });
 
-app.listen(8082, function () {
-  console.log('Ready on port 8082');
+app.listen(80, function () {
+  console.log('Ready on port 80');
 });
 
 
