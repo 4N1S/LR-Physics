@@ -12,39 +12,32 @@ parser = new xml2js.Parser();
 // [ Configuration Server web ]
 app.use(express.static(__dirname +  '/views'));
 app.set('views', __dirname + '/views');
-//app.set('json spaces', 4);
+app.set('json spaces', 4);
 
-// SVG
-// app.get('/datas', function(req, res){
-// 	//res.send('views/datas.xml');
-// 	console.log("data!!!");
-// 	res.set('Content-Type', 'text/xml');
-// 	fs.readFile( 'views/datas.xml',{encoding: 'utf8'}, function(err, data) {
-// 		parser.parseString(data, function (err, result) {
-// 			console.log(err);
-// 			res.send(result);
-// 		});
-// 	});
-// });
-// SVG FIN
+app.get('/datas.xml', function(req, res){
+	  //res.send('views/datas.xml');
+	  console.log("dta");
+	  res.set('Content-Type', 'text/xml');
+	  fs.readFile( 'views/datas.xml',{encoding: 'utf8'}, function(err, data) {
+	      parser.parseString(data, function (err, result) {
+	          console.log(err);
 
-app.get('/datas', function(req, res){
-	//res.send('views/datas.xml');
-	console.log("data!!!");
-	res.set('Content-Type', 'text/xml');
-	fs.readFile( 'views/datas.xml',{encoding: 'utf8'}, function(err, data) {
-		res.send(data);
-	});
+	          res.send(result);
+	      });
+	  });
+
 });
 
-app.get('/datasdwl', function(req, res){
-	console.log("data download");
-    res.download('views/datas.xml');
+app.get('/', function(req, res){
+    
+
 });
 
 app.listen(80, function () {
   console.log('Ready on port 80');
 });
+
+
 
 var intervalID;
 var cpt;
@@ -86,14 +79,7 @@ function scrapDatas(){
 				delete element.price;
 				element["g:brand"] = element.brand;
 				delete element.brand;
-				//AFFICHE 4 IMAGES
-				var tab_img = []
-				var racine = element.image.substring(0, element.image.length - 5);
-				for(var i=1; i<5;i++){
-					var lien_img = "http://gallery-aaldering.com" + racine + i + ".jpg";
-					tab_img.push(lien_img);
-				}
-				element["g:image_link"] = tab_img;
+				element["g:image_link"] = "http://gallery-aaldering.com" + element.image;
 				delete element.image;
 				element["id"] = element.hexon_number;
 				delete element.hexon_number;
@@ -111,7 +97,7 @@ function scrapDatas(){
 					console.log("RESULT".red)
 					console.dir(result);
 					console.log("---FIN RESULT---");
-					intervalID = setInterval(chercheDescr, 18000);
+					intervalID = setInterval(chercheDescr, 750);
 				}
 				b++;
 
@@ -120,6 +106,7 @@ function scrapDatas(){
 		} else {
 			console.log("request error on scrapping: ".red + error);
 		}
+
 	});
 }
 
@@ -127,12 +114,13 @@ function chercheDescr(){
 	console.log("chercheDescr cpt : ".blue + cpt);
 	if (cpt <= ( result.length-1 )) {
 		var url = "http://gallery-aaldering.com" + result[cpt].slug;
-		request(url,{timeout: 6000}, function (error, response, body) {
+		console.log(result[cpt].slug);
+		console.log("url " + url);
+		request(url,{timeout: 200000}, function (error, response, body) {
 			if (!error) {
 				var $ = cheerio.load(body);
-				// console.log("no error cheerio cpt " + cpt);
-				var description = $('.desc').text();
-				result[cpt]["summary"] = description.trim();
+				console.log("no error cheerio cpt " + cpt);
+				result[cpt]["summary"] = $('.desc').text();
 				cpt++;
 			} else {
 				console.log("request error on scrapping desc: ".red + error);
@@ -140,7 +128,7 @@ function chercheDescr(){
 		});
 	} else {
 		clearInterval(intervalID);
-		//console.dir(xml_file);
+		console.dir(xml_file);
 		console.log("xml_file----end----".green);
 		construct.updated = new Date();
 		construct.entry = result;
@@ -149,8 +137,6 @@ function chercheDescr(){
 		fs.writeFile(path, xml_file, function(error) {
 			if (error) {
 				console.error("write error:  ".red + error.message);
-				//SI LE FICHIER NE S'ECRIT PAS REPETITION DE LA FONCTION:
-				scrapDatas();
 			} else {
 				console.log("Successful Write to ".green + path);
 			}
@@ -158,48 +144,11 @@ function chercheDescr(){
 	}
 }
 
-// function verifNews(){
-// 	console.log("verifNews");
-// 	var tab_id = [];
-// 	fs.readFile('views/datas.xml','utf8', function(error,data){
-// 		if(error){
-// 			console.log(error);
-// 		}else{
-// 			//console.log(data);
-// 			parser.parseString(data, function (err, result) {
-// 				if(error){
-// 					console.log(err);
-// 				}else {
-// 					console.log("result".green);
-// 					console.dir(result.feed.entry);
-// 					console.log("------".green);
-// 					result.feed.entry.forEach(function(elem,index){
-// 						console.log(elem.id[0]);
-// 						tab_id.push(elem.id[0]);
-// 					});
-// 					console.log("tab id".yellow);
-// 					console.dir(tab_id);
-
-// 				}
-// 			});
-// 		}
-// 	});
-
-// 	// var contents = fs.readFileSync('views/datas.xml', 'utf8');
-// 	// console.log(contents);
-// }
-
-
-
 scrapDatas();
-//verifNews();
 
-
-// At 00:05 every day.
 new CronJob('5 0 * * *', function() {
 	console.log("cronjob Scrapping".blue);
 
 	scrapDatas();
 
 }, null, true, 'Europe/Brussels');
-
