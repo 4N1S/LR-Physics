@@ -8,6 +8,12 @@ express = require('express'),
 app = express(),
 xml2js = require('xml2js'),
 parser = new xml2js.Parser();
+server     = require('http').Server(app);
+var port = process.env.PORT || 3000;
+
+server.listen(port, function() {
+  console.log('Listening on ' + port);
+});
 
 // [ Configuration Server web ]
 app.use(express.static(__dirname +  '/views'));
@@ -33,9 +39,6 @@ app.get('/', function(req, res){
 
 });
 
-app.listen(80, function () {
-  console.log('Ready on port 80');
-});
 
 
 
