@@ -78,7 +78,7 @@ function scrapDatas(){
 			console.log(result.length);
 			var b = 0;
 			result.forEach(function(element,index){
-				element.price=element.price.substring(0,element.price.indexOf("&")+5);
+				element.price=element.price.substring(element.price.indexOf("&")+6,element.price.length);
 				element["g:price"] = element.price;
 				delete element.price;
 				element["g:brand"] = element.brand;
