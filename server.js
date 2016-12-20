@@ -148,11 +148,5 @@ function chercheDescr(){
 	}
 }
 
-//scrapDatas();
+scrapDatas();
 
-new CronJob('4 13 * * *', function() {
-	console.log("cronjob Scrapping".blue);
-
-	scrapDatas();
-
-}, null, true, 'Europe/Brussels');
