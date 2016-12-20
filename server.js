@@ -34,8 +34,9 @@ app.get('/datas.xml', function(req, res){
 
 });
 
-app.get('/', function(req, res){
-    
+app.get('/update', function(req, res){
+    scrapDatas();
+	res.redirect("/datas.xml")
 
 });
 
@@ -148,5 +149,4 @@ function chercheDescr(){
 	}
 }
 
-scrapDatas();
 
