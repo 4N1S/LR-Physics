@@ -148,9 +148,9 @@ function chercheDescr(){
 	}
 }
 
-scrapDatas();
+//scrapDatas();
 
-new CronJob('2 13 * * *', function() {
+new CronJob('4 13 * * *', function() {
 	console.log("cronjob Scrapping".blue);
 
 	scrapDatas();
