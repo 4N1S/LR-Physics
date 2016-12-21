@@ -24,13 +24,14 @@ app.get('/datas.xml', function(req, res){
 	  //res.send('views/datas.xml');
 	  console.log("dta");
 	  res.set('Content-Type', 'text/xml');
-	  fs.readFile( 'views/datas.xml',{encoding: 'utf8'}, function(err, data) {
-	      parser.parseString(data, function (err, result) {
-	          console.log(err);
+	  res.send(chercheDescr());
+	  //fs.readFile( 'views/datas.xml',{encoding: 'utf8'}, function(err, data) {
+	      //parser.parseString(data, function (err, result) {
+	      //    console.log(err);
 
-	          res.send(result);
-	      });
-	  });
+	    //      res.send(result);
+	  //    });
+	//  });
 
 });
 
@@ -138,14 +139,15 @@ function chercheDescr(){
 		construct.updated = new Date();
 		construct.entry = result;
 		var xml_file = js2xmlparser("feed", construct);
-		var path = "views/datas.xml";
-		fs.writeFile(path, xml_file, function(error) {
-			if (error) {
-				console.error("write error:  ".red + error.message);
-			} else {
-				console.log("Successful Write to ".green + path);
-			}
-		});
+		return xml_file;
+//		var path = "views/datas.xml";
+//		fs.writeFile(path, xml_file, function(error) {
+//			if (error) {
+//				console.error("write error:  ".red + error.message);
+//			} else {
+//				console.log("Successful Write to ".green + path);
+//			}
+//		});
 	}
 }
 
