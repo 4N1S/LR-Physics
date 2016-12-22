@@ -14,7 +14,6 @@ var port = process.env.PORT || 3000;
 server.listen(port, function() {
   console.log('Listening on ' + port);
 });
-scrapDatas();
 // [ Configuration Server web ]
 app.use(express.static(__dirname +  '/views'));
 app.set('views', __dirname + '/views');
@@ -124,6 +123,7 @@ function scrapDatas(){
 
 	});
 }
+scrapDatas();
 
 function chercheDescr(){
 	console.log("chercheDescr cpt : ".blue + cpt);
