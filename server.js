@@ -25,11 +25,15 @@ app.get('/datas.xml', function(req, res){
 	  console.log("dta");
 	  res.set('Content-Type', 'text/xml');
 	  fs.readFile( 'views/datas.xml',{encoding: 'utf8'}, function(err, data) {
-		  if(data==""){
+		  console.log(err);
+		  if(!data){
+			console.log("pas de data donc je scrap");  
 		  	result=scrapDatas();
 			res.send(result);
 			  
 		  }else{
+  			console.log("data.xml existe donc je lis");  
+
 			      parser.parseString(data, function (err, result) {
 				  console.log(err);
 
